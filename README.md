@@ -1,4 +1,13 @@
-# Manual install
+# Useful Links
+
+The supermarket project doesn't have, AFAIK, useful walk-throughs. I hope to provide that here.
+
+* https://www.chef.io/blog/2014/08/29/getting-started-with-oc-id-and-supermarket/
+* https://github.com/chef/supermarket/wiki/Deployment
+* https://github.com/chef/supermarket/wiki/Deployment
+
+
+## Manual install
 
 You don't want to do a manual install. Unless you're someone who wants to look under the covers before turning everything over to a cookbook.
 
