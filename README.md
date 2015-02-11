@@ -63,6 +63,11 @@ Configure `/etc/supermarket/supermarket.rb`, with the app_id and secret from abo
     default['supermarket']['chef_oauth2_url'] = 'https://chefserver-0.c.cheffian-supermarket.internal'
     default['supermarket']['chef_oauth2_verify_ssl'] = false
 
+
+ALSO, you don't want to use self-signed certs, as Berkshelf has a hard time with that, so don't force ssl:
+
+    default['supermarket']['nginx']['force_ssl'] = false
+
 Reconfigure:
 
     supermarket-ctl reconfigure
