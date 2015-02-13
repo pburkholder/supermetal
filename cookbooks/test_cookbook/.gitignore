@@ -1,4 +1,3 @@
-.chef
 .vagrant
 Berksfile.lock
 *~
@@ -15,7 +14,3 @@ bin/*
 
 .kitchen/
 .kitchen.local.yml
-
-berks-cookbooks/
-chef-repo/
-berkshelf/

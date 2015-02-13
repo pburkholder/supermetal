@@ -52,7 +52,7 @@ Configure oc-id
 Install:
 
     apt-get update
-    curl https://packagecloud.io/install/repositories/chef/stable/script.deb | apt-get update
+    curl https://packagecloud.io/install/repositories/chef/stable/script.deb | curl
     apt-get install supermarket
     supermarket-ctl reconfigure
 

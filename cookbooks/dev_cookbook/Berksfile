@@ -1,0 +1,4 @@
+ENV['SSL_CERT_FILE'] = '/Users/pburkholder/Hack/supermetal/cacert.pem'
+source "https://supermarket-0.c.cheffian-supermarket.internal"
+
+metadata
