@@ -85,9 +85,110 @@ You should be in.
 
 #### Notes
 
+## ssl testing
+
+Even with ssl.verify off, `berks install` or `berks vendor` will fail when supermarket is using a self-signed certificate. So, how do we get around that?
+
+Got /var/opt/supermarket/ssl/cacert.pem into local cacert.pem. I hacked my /etc/hosts to resolve supermarket-0.c.cheffian-supermarket.internal
+
+### Get the CERT
+
+
+    knife ssl fetch supermarket-0.c.cheffian-supermarket.internal
+    # concatenate all your pems
+    cd ....chef/trusted_certs
+    cat &star.crt > cacert.pem
+
+### openssl s_client
+
+Cert verify with `openssl`
+
+    openssl s_client -CAfile cacert.pem -connect supermarket-0.c.cheffian-supermarket.internal:443 -verify 0
+
+
+### Faraday
+
+But curl doesn't matter, since Berkshelf uses Faraday, so let's try with that:
+
+    require 'faraday'
+    print "Trying with no ssl options:\n"
+    begin
+        connection = Faraday::Connection.new 'https://supermarket-0.c.cheffian-supermarket.internal'
+        p connection.get '/universe'
+        p "WORKED\n\n\n"
+    rescue Exception => e
+        print e.message, "\n\n\n"
+    end
+
+    print "Trying with ssl ca_file options:\n"
+    begin
+        connection = Faraday::Connection.new 'https://supermarket-0.c.cheffian-supermarket.internal', :ssl => { :ca_file => './cacert.pem' }
+        p connection.get '/universe'
+        p "WORKED\n\n\n"
+    rescue Exception => e
+        print e.message, "\n\n\n"
+    end
+
+###  Berks
+
+However, Berks doesn't have any options for specifying CA_file.  Hmmmm. Good news, the above script works when:
+
+    export SSL_CERT_FILE=cacert.pem
+
+Now attempts to use `berks` with the same SSL_CERT_FILE path set will work.
+
+    berks vendor
+
+should work.
+
+
+### Berksfile?
+
+Add this to your Berskfile:
+
+    ENV['SSL_CERT_FILE'] = '/some/path/to/cacert.pem'
+
+
+### Aside: Cert verify with `curl`
+
+I can't get curl to work with self-signed cert, so don't count on Curl for helping you here. You'd think the following would work:
+
+    curl -v --cacert cacert.pem https://supermarket-0.c.cheffian-supermarket.internal:443
+
+But it doesn't. It would seem that since self-signed certs don't assert themselves as CAs that curl won't be happy (and probably berks neither). That is, that
+
+    openssl x509 -in cacert.pem -inform pem -text -out certdata
+
+won't contain:
+
+    X509v3 Basic Constraints:
+    CA:TRUE
+    X509v3 Key Usage:
+    Certificate Sign, CRL Sign
+
+## callback notes
+
 These are all the Callback URLs that I authorized above:
 
     https://supermarket/auth/chef_oauth2/callback
     http://supermarket/auth/chef_oauth2/callback
     http://supermarket-0.c.cheffian-supermarket.internal/auth/chef_oauth2/callback
     https://supermarket-0.c.cheffian-supermarket.internal/auth/chef_oauth2/callback
+
+
+
+
+# How it all fits together!
+
+https://github.com/chef/omnibus-supermarket/blob/master/cookbooks/omnibus-supermarket/attributes/default.rb
+
+Becomes /etc/supermarket/supermarket.rb
+
+So, after you install omnibus-supermarket, you'll want a cookbook to
+use the modify supermarket.rb
+
+Wrap, wrap, baby???
+
+The things to address are:
+- ssl cert
+- features -- currybot?
