@@ -1,0 +1,7 @@
+default['cheffian.com']['common_name'] = 'Cheffian'
+default['cheffian.com']['country']	= 'United Status'
+default['cheffian.com']['city']	= 'Hyattsville'
+default['cheffian.com']['state'] = 'MD'
+default['cheffian.com']['organization'] = 'Peter Burkholder'
+default['cheffian.com']['department'] = 'Me'
+default['cheffian.com']['email'] = 'pburkholder@pobox.com'
