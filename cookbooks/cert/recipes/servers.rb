@@ -19,4 +19,4 @@ group = 'staff'
   end
 end
 
-# openssl verify -CAfile /tmp/ssl/cheffian_CA.pem -purpose sslserver /tmp/ssl/wiki.cheffian.com.pem
+# openssl verify -CAfile /tmp/ssl/cheffian_CA.pem -purpose sslserver /tmp/ssl/chefserver.cheffian.com.pem
