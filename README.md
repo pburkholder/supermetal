@@ -24,14 +24,15 @@ Install and configure api_fqdn:
     curl https://packagecloud.io/install/repositories/chef/stable/script.deb |  bash
     apt-get update
     apt-get install chef-server-core
-    echo "api_fqdn \"$(hostname -f)\"" >> /etc/opscode/chef-server.rb
+    echo "api_fqdn \"chefserver.cheffian.com\"" >> /etc/opscode/chef-server.rb
     chef-server-ctl reconfigure
 
 Add orgs/user:
 
     chef-server-ctl user-create pdb Peter Burkholder pburkholder@getchef.com TestPassword -f pdb.pem
-    chef-server-ctl org-create pdb_chef12_org pdb_chef12_org -f pdb_chef12_org.pem -a pdb
-    echo "oc_id['administrators'] = ['pdb']" >> /etc/opscode/chef-server.rb
+    chef-server-ctl user-create demo Fname Lname demo@chef.io DemoPassword -f demo.pem
+    chef-server-ctl org-create demo_org demo_org -f demo_org.pem -a demo
+    echo "oc_id['administrators'] = ['demo']" >> /etc/opscode/chef-server.rb
     chef-server-ctl reconfigure
 
 Configure oc-id
