@@ -42,8 +42,8 @@ Configure oc-id
   * Name: supermarket
   * Redirect uri: https://<ip or name of supermarket server>/auth/chef_oauth2/callback
     * e.g.:
+          https://supermarket.cheffian.com/auth/chef_oauth2/callback
           https://supermarket/auth/chef_oauth2/callback
-          http://supermarket/auth/chef_oauth2/callback
 * After you click Submit you will be shown the Application Id and Secret strings which you must supply to Supermarket.  Copy these down, but don’t worry about losing them. You can always retrieve them from the /id/oauth/applications URL of your Chef server.
 
 
@@ -61,7 +61,7 @@ Configure `/etc/supermarket/supermarket.rb`, with the app_id and secret from abo
 
     default['supermarket']['chef_oauth2_app_id'] = '1fcce03a...67b822d1196'
     default['supermarket']['chef_oauth2_secret'] = '9836e5f7d65....b10178ac0d'
-    default['supermarket']['chef_oauth2_url'] = 'https://chefserver-0.c.cheffian-supermarket.internal'
+    default['supermarket']['chef_oauth2_url'] = 'https://chefserver.cheffian.com'
     default['supermarket']['chef_oauth2_verify_ssl'] = false
 
 
@@ -75,7 +75,7 @@ Reconfigure:
 
 Next:
 
-https://supermarket-0.c.cheffian-supermarket.internal/sign-in
+https://supermarket.cheffian.com/sign-in
 
 You'll be redirected to the `oc-id` service on chef-server. Sign-in with the credentials you used above, then accept the request to 'Authorize Supermarket to use your Chef account'
 
@@ -90,12 +90,12 @@ You should be in.
 
 Even with ssl.verify off, `berks install` or `berks vendor` will fail when supermarket is using a self-signed certificate. So, how do we get around that?
 
-Got /var/opt/supermarket/ssl/cacert.pem into local cacert.pem. I hacked my /etc/hosts to resolve supermarket-0.c.cheffian-supermarket.internal
+Got /var/opt/supermarket/ssl/cacert.pem into local cacert.pem. 
 
 ### Get the CERT
 
 
-    knife ssl fetch supermarket-0.c.cheffian-supermarket.internal
+    knife ssl fetch supermarket.cheffian.com
     # concatenate all your pems
     cd ....chef/trusted_certs
     cat &star.crt > cacert.pem
@@ -104,7 +104,7 @@ Got /var/opt/supermarket/ssl/cacert.pem into local cacert.pem. I hacked my /etc/
 
 Cert verify with `openssl`
 
-    openssl s_client -CAfile cacert.pem -connect supermarket-0.c.cheffian-supermarket.internal:443 -verify 0
+    openssl s_client -CAfile cacert.pem -connect supermarket.cheffian.com:443 -verify 0
 
 
 ### Faraday
@@ -154,7 +154,7 @@ Add this to your Berskfile:
 
 I can't get curl to work with self-signed cert, so don't count on Curl for helping you here. You'd think the following would work:
 
-    curl -v --cacert cacert.pem https://supermarket-0.c.cheffian-supermarket.internal:443
+    curl -v --cacert cacert.pem https://supermarket.cheffian.com:443
 
 But it doesn't. It would seem that since self-signed certs don't assert themselves as CAs that curl won't be happy (and probably berks neither). That is, that
 
@@ -171,10 +171,7 @@ won't contain:
 
 These are all the Callback URLs that I authorized above:
 
-    https://supermarket/auth/chef_oauth2/callback
-    http://supermarket/auth/chef_oauth2/callback
-    http://supermarket-0.c.cheffian-supermarket.internal/auth/chef_oauth2/callback
-    https://supermarket-0.c.cheffian-supermarket.internal/auth/chef_oauth2/callback
+    https://supermarket.cheffian.com/auth/chef_oauth2/callback
 
 
 
