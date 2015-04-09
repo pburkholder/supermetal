@@ -65,7 +65,6 @@ Configure `/etc/supermarket/supermarket.rb`, with the app_id and secret from abo
     default['supermarket']['chef_oauth2_verify_ssl'] = false
 
 
-
 Reconfigure:
 
     supermarket-ctl reconfigure
